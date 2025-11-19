@@ -1,0 +1,11 @@
+public class Ejercicio08 {
+    public static void main(String[] args) {
+        double[] nums = {3.5, 4.0, 2.7, 5.0, 4.8};
+        double suma = 0;
+
+        for (double n : nums) suma += n;
+
+        double promedio = suma / nums.length;
+        System.out.println("El promedio es: " + promedio);
+    }
+}
