@@ -1,0 +1,232 @@
+package proyecto;
+import java.util.Scanner;
+public class TecnoBiblioSolutions {
+	
+	    public static void main(String[] args) {
+	        Scanner sc = new Scanner(System.in);
+
+	        String[] titulos = new String[100];
+	        String[] autores = new String[100];
+	        String[] isbns = new String[100];
+	        int[] cantidades = new int[100];
+	        double[] precios = new double[100];
+	        int total = 0;
+	        int opcion;
+
+	        String adminUser = "admin";
+	        String adminPass = "1234";
+	        String basicUser = "usuario";
+	        String basicPass = "1111";
+	        boolean esAdmin = false;
+
+	        System.out.println("════════════════════════════════════════════");
+	        System.out.println("           TECNOBIBLIOSOLUTIONS");
+	        System.out.println("             INICIO DE SESIÓN");
+	        System.out.println("════════════════════════════════════════════");
+
+	        System.out.print("Usuario: ");
+	        String usuario = sc.nextLine();
+	        System.out.print("Contraseña: ");
+	        String clave = sc.nextLine();
+
+	        if (usuario.equals(adminUser) && clave.equals(adminPass)) {
+	            esAdmin = true;
+	            System.out.println("Bienvenido Administrador.");
+	        } else if (usuario.equals(basicUser) && clave.equals(basicPass)) {
+	            esAdmin = false;
+	            System.out.println("Bienvenido Usuario Básico.");
+	        } else {
+	            System.out.println("Credenciales incorrectas.");
+	            return;
+	        }
+
+	        do {
+	            System.out.println("════════════════════════════════════════════");
+	            System.out.println("               MENÚ PRINCIPAL");
+	            System.out.println("════════════════════════════════════════════");
+
+	            if (esAdmin) {
+	                System.out.println("1. Registrar libro");
+	                System.out.println("2. Actualizar cantidad");
+	            }
+
+	            System.out.println("3. Ver inventario completo");
+	            System.out.println("4. Buscar libro");
+	            System.out.println("5. Reportes");
+	            System.out.println("6. Valor total del inventario");
+
+	            if (esAdmin) {
+	                System.out.println("7. Eliminar libro");
+	            }
+
+	            System.out.println("8. Salir");
+	            System.out.print("Opción: ");
+	            opcion = sc.nextInt();
+	            sc.nextLine();
+
+	            switch (opcion) {
+	                case 1:
+	                    if (esAdmin) {
+	                        if (total < 100) {
+	                            System.out.println("──────── REGISTRO DE LIBRO ────────");
+	                            System.out.print("Título: ");
+	                            titulos[total] = sc.nextLine();
+	                            System.out.print("Autor: ");
+	                            autores[total] = sc.nextLine();
+	                            System.out.print("ISBN: ");
+	                            isbns[total] = sc.nextLine();
+	                            System.out.print("Cantidad: ");
+	                            cantidades[total] = sc.nextInt();
+	                            System.out.print("Precio: ");
+	                            precios[total] = sc.nextDouble();
+	                            sc.nextLine();
+	                            total++;
+	                            System.out.println("Libro registrado.");
+	                        } else {
+	                            System.out.println("Inventario lleno.");
+	                        }
+	                    } else {
+	                        System.out.println("Acceso no permitido.");
+	                    }
+	                    break;
+
+	                case 2:
+	                    if (esAdmin) {
+	                        System.out.print("ISBN del libro: ");
+	                        String codigo = sc.nextLine();
+	                        boolean encontrado = false;
+	                        for (int i = 0; i < total; i++) {
+	                            if (isbns[i].equalsIgnoreCase(codigo)) {
+	                                System.out.print("Nueva cantidad: ");
+	                                cantidades[i] = sc.nextInt();
+	                                sc.nextLine();
+	                                System.out.println("Cantidad actualizada.");
+	                                encontrado = true;
+	                                break;
+	                            }
+	                        }
+	                        if (!encontrado) System.out.println("No se encontró el libro.");
+	                    } else {
+	                        System.out.println("Acceso no permitido.");
+	                    }
+	                    break;
+
+	                case 3:
+	                    if (total == 0) {
+	                        System.out.println("No hay libros registrados.");
+	                    } else {
+	                        System.out.println("════════ INVENTARIO ════════");
+	                        for (int i = 0; i < total; i++) {
+	                            System.out.println("Título: " + titulos[i]);
+	                            System.out.println("Autor: " + autores[i]);
+	                            System.out.println("ISBN: " + isbns[i]);
+	                            System.out.println("Cantidad: " + cantidades[i]);
+	                            System.out.println("Precio: " + precios[i]);
+	                            System.out.println("────────────────────────────");
+	                        }
+	                    }
+	                    break;
+
+	                case 4:
+	                    if (total == 0) {
+	                        System.out.println("No hay libros registrados.");
+	                    } else {
+	                        System.out.print("Buscar: ");
+	                        String busqueda = sc.nextLine().toLowerCase();
+	                        boolean hallado = false;
+	                        for (int i = 0; i < total; i++) {
+	                            if (titulos[i].toLowerCase().contains(busqueda) ||
+	                                autores[i].toLowerCase().contains(busqueda)) {
+	                                System.out.println("Título: " + titulos[i]);
+	                                System.out.println("Autor: " + autores[i]);
+	                                System.out.println("ISBN: " + isbns[i]);
+	                                System.out.println("Cantidad: " + cantidades[i]);
+	                                System.out.println("Precio: " + precios[i]);
+	                                System.out.println("────────────────────────────");
+	                                hallado = true;
+	                            }
+	                        }
+	                        if (!hallado) System.out.println("No se encontró.");
+	                    }
+	                    break;
+
+	                case 5:
+	                    if (total == 0) {
+	                        System.out.println("No hay datos.");
+	                    } else {
+	                        int menor = cantidades[0];
+	                        int mayor = cantidades[0];
+	                        int posMenor = 0;
+	                        int posMayor = 0;
+
+	                        System.out.println("Stock bajo (≤3):");
+	                        for (int i = 0; i < total; i++) {
+	                            if (cantidades[i] <= 3)
+	                                System.out.println(titulos[i] + " (" + cantidades[i] + ")");
+
+	                            if (cantidades[i] < menor) {
+	                                menor = cantidades[i];
+	                                posMenor = i;
+	                            }
+	                            if (cantidades[i] > mayor) {
+	                                mayor = cantidades[i];
+	                                posMayor = i;
+	                            }
+	                        }
+
+	                        System.out.println("Menor stock: " + titulos[posMenor]);
+	                        System.out.println("Mayor stock: " + titulos[posMayor]);
+	                    }
+	                    break;
+
+	                case 6:
+	                    if (total == 0) System.out.println("Inventario vacío.");
+	                    else {
+	                        double valor = 0;
+	                        for (int i = 0; i < total; i++) {
+	                            valor += precios[i] * cantidades[i];
+	                        }
+	                        System.out.println("Valor total: $" + valor);
+	                    }
+	                    break;
+
+	                case 7:
+	                    if (esAdmin) {
+	                        System.out.print("ISBN a eliminar: ");
+	                        String isbnEliminar = sc.nextLine();
+	                        boolean eliminado = false;
+
+	                        for (int i = 0; i < total; i++) {
+	                            if (isbns[i].equalsIgnoreCase(isbnEliminar)) {
+	                                for (int j = i; j < total - 1; j++) {
+	                                    titulos[j] = titulos[j + 1];
+	                                    autores[j] = autores[j + 1];
+	                                    isbns[j] = isbns[j + 1];
+	                                    cantidades[j] = cantidades[j + 1];
+	                                    precios[j] = precios[j + 1];
+	                                }
+	                                total--;
+	                                eliminado = true;
+	                                System.out.println("Libro eliminado.");
+	                                break;
+	                            }
+	                        }
+
+	                        if (!eliminado) System.out.println("No se encontró el libro.");
+	                    } else {
+	                        System.out.println("Acceso no permitido.");
+	                    }
+	                    break;
+
+	                case 8:
+	                    System.out.println("Cerrando sesión...");
+	                    break;
+
+	                default:
+	                    System.out.println("Opción inválida.");
+	            }
+	        } while (opcion != 8);
+
+	        sc.close();
+	    }
+	}
