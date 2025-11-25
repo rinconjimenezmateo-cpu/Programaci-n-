@@ -1,0 +1,131 @@
+import javax.swing.*;
+
+//Librería AWT (Abstract Window Toolkit): usada para manejar el diseño visual y colores
+import java.awt.*;
+
+//Librería AWT Event: permite manejar eventos del usuario, como clics de botones
+import java.awt.event.*;
+
+//--------------------------
+//CLASE PRINCIPAL
+//--------------------------
+public class CalculadoraGrafica extends JFrame implements ActionListener {
+
+ private static final long serialVersionUID = 1L;
+// --------------------------
+ // DECLARACIÓN DE VARIABLES
+ // --------------------------
+ private JTextField pantalla;  // Cuadro de texto donde se muestra el resultado
+ private double num1 = 0, num2 = 0, resultado = 0;  // Variables para los números y el resultado
+ private char operador;  // Guarda el operador seleccionado (+, -, *, /)
+
+ // --------------------------
+ // CONSTRUCTOR DE LA CLASE
+ // --------------------------
+ public CalculadoraGrafica() {
+     // Configura el título de la ventana
+     setTitle("Calculadora en Java");
+
+     // Define el tamaño de la ventana
+     setSize(300, 400);
+
+     // Hace que la aplicación se cierre cuando se presione la X
+     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+     // Centra la ventana en la pantalla
+     setLocationRelativeTo(null);
+
+     // --------------------------
+     // CREACIÓN DE COMPONENTES
+     // --------------------------
+
+     // Crea el cuadro de texto (pantalla)
+     pantalla = new JTextField();
+     pantalla.setEditable(false);  // No permite escribir directamente
+     pantalla.setHorizontalAlignment(JTextField.RIGHT); // Alinea el texto a la derecha
+
+     // Crea un panel para los botones
+     JPanel panelBotones = new JPanel();
+
+     // Define una cuadrícula de 4 filas x 4 columnas
+     panelBotones.setLayout(new GridLayout(4, 4, 5, 5));
+
+     // Arreglo con los textos de los botones
+     String[] botones = {
+         "7", "8", "9", "/",
+         "4", "5", "6", "*",
+         "1", "2", "3", "-",
+         "0", "C", "=", "+"
+     };
+
+     // --------------------------
+     // CREACIÓN DE BOTONES
+     // --------------------------
+     for (String texto : botones) {
+         JButton boton = new JButton(texto);      // Crea un botón con el texto
+         boton.addActionListener(this);           // Asocia el botón con el evento de clic
+         panelBotones.add(boton);                 // Agrega el botón al panel
+     }
+
+     // --------------------------
+     // ORGANIZAR ELEMENTOS EN LA VENTANA
+     // --------------------------
+     setLayout(new BorderLayout());
+     add(pantalla, BorderLayout.NORTH);   // La pantalla arriba
+     add(panelBotones, BorderLayout.CENTER); // Los botones en el centro
+
+     // Hace visible la ventana
+     setVisible(true);
+ }
+
+ // --------------------------
+ // MÉTODO PARA MANEJAR LOS EVENTOS DE LOS BOTONES
+ // --------------------------
+ @Override
+ public void actionPerformed(ActionEvent e) {
+     String comando = e.getActionCommand(); // Obtiene el texto del botón presionado
+
+     // Si el botón es un número
+     if (comando.charAt(0) >= '0' && comando.charAt(0) <= '9') {
+         pantalla.setText(pantalla.getText() + comando); // Agrega el número a la pantalla
+     }
+     // Si se presiona "C" → borrar
+     else if (comando.equals("C")) {
+         pantalla.setText(""); // Limpia la pantalla
+         num1 = num2 = resultado = 0;
+     }
+     // Si se presiona "=" → calcular resultado
+     else if (comando.equals("=")) {
+         num2 = Double.parseDouble(pantalla.getText()); // Convierte el texto a número
+
+         // Realiza la operación según el operador
+         switch (operador) {
+             case '+': resultado = num1 + num2; break;
+             case '-': resultado = num1 - num2; break;
+             case '*': resultado = num1 * num2; break;
+             case '/': 
+                 if (num2 != 0)
+                     resultado = num1 / num2;
+                 else
+                     JOptionPane.showMessageDialog(this, "Error: División por cero");
+                 break;
+         }
+
+         pantalla.setText(String.valueOf(resultado)); // Muestra el resultado
+     }
+     // Si se presiona un operador (+, -, *, /)
+     else {
+         num1 = Double.parseDouble(pantalla.getText()); // Guarda el primer número
+         operador = comando.charAt(0);                  // Guarda el operador
+         pantalla.setText("");                          // Limpia la pantalla para el segundo número
+     }
+ }
+
+ // --------------------------
+ // MÉTODO PRINCIPAL
+ // --------------------------
+ public static void main(String[] args) {
+     // Llama al constructor → crea la interfaz
+     new CalculadoraGrafica();
+ }
+}
